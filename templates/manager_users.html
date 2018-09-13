@@ -13,6 +13,7 @@
 	  {% for user in users%}
 	  <tr>
 	    <th align="center"> {{user.user_name}}</th>
+        <th align="center"> <a href="{{ url_for('manager_user', id=user.user_id)}}"> 点击进入 </a> </th>
 	  </tr>
 	  {% endfor %}
 	</table>
