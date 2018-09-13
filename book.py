@@ -131,7 +131,6 @@ def reader_judge():
 		error = 'Invalid reader, please login'
 		return render_template('reader_login.html', error = error)
 
-
 @app.route('/manager/books')
 def manager_books():
 	manager_judge()
@@ -156,7 +155,6 @@ def manager_users():
 
 @app.route('/manager/user/modify/<id>', methods=['GET', 'POST'])
 def manger_user_modify(id):
-	user_judge()
 	error = None
 	user = query_db('''select * from users where user_id = ?''', [id], one=True)
 	if request.method == 'POST':
@@ -237,10 +235,10 @@ def manager_books_delete():
 @app.route('/manager/book/<id>', methods=['GET', 'POST'])
 def manager_book(id):
 	manager_judge()
+	error = None
+	name = query_db('''select user_name from borrows where book_id = ?''', [id], one=True)
 	book = query_db('''select * from books where book_id = ?''', [id], one=True)
 	reader = query_db('''select * from borrows where book_id = ?''', [id], one=True)
-	name = query_db('''select user_name from borrows where book_id = ?''', [id], one=True)
-
 	current_time = time.strftime('%Y-%m-%d',time.localtime(time.time()))
 	if request.method == 'POST':
 		db = get_db()
@@ -250,7 +248,7 @@ def manager_book(id):
 		db.execute('''delete from borrows where book_id = ? ''' , [id])
 		db.commit()
 		return redirect(url_for('manager_book', id = id))
-	   	return render_template('manager_book.html', book = book, reader = reader)
+	return render_template('manager_book.html', book = book, reader = reader)
 
 @app.route('/manager/user/<id>', methods=['GET', 'POST'])
 def manager_user(id):
@@ -369,7 +367,7 @@ def reader_book(id):
 										   current_time, 'not return'])
 				db.commit()
 				return redirect(url_for('reader_book', id = id))
-	   	return render_template('reader_book.html', book = book, reader = reader, error = error)
+	return render_template('reader_book.html', book = book, reader = reader, error = error)
 
 @app.route('/reader/histroy', methods=['GET', 'POST'])
 def reader_histroy():
